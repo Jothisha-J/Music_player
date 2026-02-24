@@ -1,0 +1,90 @@
+package java_Graphics_AWT;
+import javax.sound.sampled.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+
+public class Music_Player extends JFrame {
+	Long currentFrame;
+    Clip clip;
+    AudioInputStream audioInputStream;
+    static String filePath = "D:\\Symphony.wav";
+    JButton playButton, stopButton, restartButton;
+    public Music_Player() throws Exception {
+        audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+        clip = AudioSystem.getClip();
+        clip.open(audioInputStream);
+        setTitle("Music Player");
+        setSize(500, 500);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ImageIcon play = new ImageIcon("D:\\play.png");
+        ImageIcon stop = new ImageIcon("D:\\stop.png");
+        ImageIcon restart = new ImageIcon("D:\\restart.png");
+        playButton = new JButton(play);
+        playButton.setBounds(30, 30, 120, 120);
+        add(playButton);
+        stopButton = new JButton(stop);
+        stopButton.setBounds(160, 30, 120, 120);
+        add(stopButton);
+        restartButton = new JButton(restart);
+        restartButton.setBounds(290, 30, 120, 120);
+        add(restartButton);
+        playButton.addActionListener(e -> play());
+        stopButton.addActionListener(e -> stop());
+        restartButton.addActionListener(e -> restart());
+        setVisible(true);
+    }
+
+    public void play() {
+        clip.start();
+    }
+
+    public void stop() {
+        clip.stop();
+        clip.close();
+        clip.setFramePosition(0);
+    }
+    public void resumeAudio()
+    {
+    	 try {
+    	        clip.close();
+    	        resetAudioStream();
+    	        clip.setMicrosecondPosition(currentFrame);
+    	        this.play();
+    	    } catch (Exception e) {
+    	        e.printStackTrace();
+    	    }}
+    
+    
+    	public void resetAudioStream() throws Exception{
+            audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+    		clip.open(audioInputStream);
+    	}
+   
+    public void restart(){
+    	try {
+            clip.stop();
+            clip.close();
+            resetAudioStream();
+            currentFrame = 0L;
+            clip.setMicrosecondPosition(0);
+            this.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    	}
+
+
+
+
+    public static void main(String[] args) {
+            try {
+                new Music_Player();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+    }
+}
+
